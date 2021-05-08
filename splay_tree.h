@@ -17,4 +17,12 @@ void left_rotate(Node* node);
 
 void splay(Node* node);
 
+Node* find_min(Node* node);
+
+Node* find_max(Node* node);
+
+Node* split(Node* node);
+
+Node* merge(Node* node1, Node* node2);
+
 void print(Node* node);
