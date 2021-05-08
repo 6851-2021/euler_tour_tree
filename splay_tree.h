@@ -2,6 +2,7 @@
 
 typedef uint64_t k_t;
 typedef uint64_t v_t;
+typedef uint64_t size_t;
 
 typedef struct Node {
     struct Node *parent, *left, *right;

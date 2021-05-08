@@ -157,7 +157,7 @@ void print(Node* node) {
     }
 }
 
-int main() {
+int main2() {
     Node* node1 = make_node(1, 0);
     Node* node2 = make_node(2, 0);
     Node* node3 = make_node(3, 0);

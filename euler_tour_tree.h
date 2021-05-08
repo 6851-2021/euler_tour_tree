@@ -1,5 +1,6 @@
 #include "splay_tree.h"
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef struct EulerTourTree {
     Node** visits;
@@ -8,13 +9,13 @@ typedef struct EulerTourTree {
 
 EulerTourTree* make_euler_tour_tree(size_t n);
 
-k_t find_root(EulerTourTree* tree, k_t k);
+k_t find_root(EulerTourTree* tree, k_t v);
 
-void cut(EulerTourTree* tree, k_t k);
+void cut(EulerTourTree* tree, k_t v);
 
-void link(EulerTourTree* tree, k_t v, k_t w);
+void link(EulerTourTree* tree, k_t u, k_t v);
 
-bool connectivity(EulerTourTree* tree, k_t v, k_t w);
+bool connectivity(EulerTourTree* tree, k_t u, k_t v);
 
 v_t subtree_aggregate_min(EulerTourTree* tree, k_t k);
 
