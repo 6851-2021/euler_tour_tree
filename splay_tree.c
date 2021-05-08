@@ -16,7 +16,12 @@ void right_rotate(Node* node) {
     Node* parent = node->parent;
     Node* gp = parent->parent;
     if (gp != NULL) {
-        gp->left = node;
+        if (parent == gp->left) {
+            gp->left = node;
+        }
+        else {
+            gp->right = node;
+        }
     }
     node->parent = gp;
     parent->parent = node;
@@ -31,7 +36,12 @@ void left_rotate(Node* node) {
     Node* parent = node->parent;
     Node* gp = parent->parent;
     if (gp != NULL) {
-        gp->right = node;
+        if (parent == gp->right) {
+            gp->right = node;
+        }
+        else {
+            gp->left = node;
+        }
     }
     node->parent = gp;
     parent->parent = node;
@@ -101,7 +111,7 @@ Node* find_max(Node* node) {
     return node;
 }
 
-Node* split(Node* node) {
+Node* split_right(Node* node) {
     // node ends up on left side
     // returns the root of the other (right) tree
     // which might be null
@@ -112,6 +122,19 @@ Node* split(Node* node) {
         node->right = NULL;
     }
     return right;
+}
+
+Node* split_left(Node* node) {
+    // node ends up on right side
+    // returns the root of the other (left) tree
+    // which might be null
+    splay(node);
+    Node* left = node->left;
+    if (left != NULL) {
+        left->parent = NULL;
+        node->left = NULL;
+    }
+    return left;
 }
 
 Node* merge(Node* node1, Node* node2) {
@@ -161,10 +184,18 @@ int main() {
     splay(node2);
     print(node2);
     printf("\n-----------------\n");
-    Node* right = split(node5);
+
+    splay(node5);
+    print(node5);
+    printf("\n");
+    Node* right = split_right(node5);
     print(right);
     printf("\n");
-    //print(node5);
-    //printf("\n");
+    print(node5);
+    printf("\n");
+
+    root = merge(node5, right);
+    print(root);
+    printf("\n");
     return 0;
 }

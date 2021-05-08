@@ -21,7 +21,9 @@ Node* find_min(Node* node);
 
 Node* find_max(Node* node);
 
-Node* split(Node* node);
+Node* split_left(Node* node);
+
+Node* split_right(Node* node);
 
 Node* merge(Node* node1, Node* node2);
 
