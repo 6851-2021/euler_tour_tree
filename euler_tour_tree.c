@@ -67,7 +67,7 @@ v_t subtree_aggregate_sum(EulerTourTree* tree, k_t k);
 
 v_t subtree_aggregate_size(EulerTourTree* tree, k_t k);
 
-int main() {
+int main3() {
     EulerTourTree* tree = make_euler_tour_tree(10);
     bool connected = false;
     for (int i = 0; i < 10; i++) {
