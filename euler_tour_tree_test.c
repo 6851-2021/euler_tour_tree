@@ -9,8 +9,8 @@
 bool all_connected(EulerTourTree* tree, size_t* nodes, size_t n) {
     for (int i = 0; i < n; i++) {
         for (int j = i+1; j < n; j++) {
-            printf("%lu %lu\n", nodes[i], nodes[j]);
-            printf("roots %lu %lu\n", find_root(tree, nodes[i]), find_root(tree, nodes[j]));
+            // printf("%lu %lu\n", nodes[i], nodes[j]);
+            // printf("roots %lu %lu\n", find_root(tree, nodes[i]), find_root(tree, nodes[j]));
             if (!connectivity(tree, nodes[i], nodes[j])) {
                 return false;
             }
@@ -54,4 +54,6 @@ int main() {
     }
 
     free(all_nodes);
+
+    printf("passed\n");
 }
