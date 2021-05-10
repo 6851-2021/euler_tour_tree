@@ -94,9 +94,7 @@ Node* find_min(Node* node) {
     if (node == NULL) {
         return NULL;
     }
-    while (node->parent != NULL) {
-        node = node->parent;
-    }
+    splay(node);
     while (node->left != NULL) {
         node = node->left;
     }
@@ -108,9 +106,7 @@ Node* find_max(Node* node) {
     if (node == NULL) {
         return NULL;
     }
-    while (node->parent != NULL) {
-        node = node->parent;
-    }
+    splay(node);
     while (node->right != NULL) {
         node = node->right;
     }
