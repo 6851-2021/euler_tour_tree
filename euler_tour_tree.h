@@ -15,6 +15,8 @@ void cut(EulerTourTree* tree, k_t v);
 
 void link(EulerTourTree* tree, k_t u, k_t v);
 
+void point_update(EulerTourTree* tree, k_t v, v_t new_value);
+
 void subtree_update(EulerTourTree* tree, k_t v, v_t delta);
 
 bool connectivity(EulerTourTree* tree, k_t u, k_t v);

@@ -111,7 +111,7 @@ void print_node(EulerTourTree* tree, k_t v) {
     printf("min %ld, max %ld, sum %ld, size %ld\n", subtree_aggregate_min(tree, v), subtree_aggregate_max(tree, v), subtree_aggregate_sum(tree, v), subtree_aggregate_size(tree, v));
 }
 
-int main() {
+int main2() {
     EulerTourTree* tree = make_euler_tour_tree(10);
     bool connected = false;
     for (int i = 0; i < 10; i++) {
