@@ -14,6 +14,7 @@ typedef struct Augmentations {
     v_t max;
     v_t sum;
     v_t size;
+    v_t lazy;
 } Augmentations;
 
 typedef struct Node {
@@ -32,9 +33,7 @@ void update_node(Node* node, v_t new_value);
 
 void update_node_start(Node* node, int is_start);
 
-void right_rotate(Node* node);
-
-void left_rotate(Node* node);
+void update_range(Node* start, Node* end, v_t delta);
 
 void splay(Node* node);
 

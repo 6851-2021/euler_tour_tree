@@ -34,6 +34,26 @@ void augment_node(Node* node) {
     }
 }
 
+void propagate(Node* node) {
+    if (node != NULL && node->augments.lazy != 0) {
+        node->value += node->augments.lazy;
+        node->augments.min += node->augments.lazy;
+        node->augments.max += node->augments.lazy;
+        node->augments.sum += (node->augments.lazy) * (node->augments.size);
+
+        if (node->left != NULL) {
+            node->left->augments.lazy += node->augments.lazy;
+        }
+
+        if (node->right != NULL) {
+            node->right->augments.lazy += node->augments.lazy;
+        }
+
+        node->augments.lazy = 0;
+    }
+    
+}
+
 Node* make_node(k_t key, v_t value, int is_start) {
     Node* node = malloc(sizeof(Node));
     node->key = key;
@@ -45,6 +65,16 @@ Node* make_node(k_t key, v_t value, int is_start) {
 
     augment_node(node);
     return node;
+}
+
+void update_range(Node* start, Node* end, v_t delta) {
+    Node* left = split_left(start);
+    Node* right = split_right(end);
+
+    end->augments.lazy += delta;
+    propagate(end);
+    
+    merge(left, merge(end, right));
 }
 
 void update_node(Node* node, v_t new_value) {
@@ -62,6 +92,8 @@ void update_node_start(Node* node, int is_start) {
 Augmentations query(Node* start, Node* end) {
     Node* left = split_left(start);
     Node* right = split_right(end);
+    // printf("end is %p\n", end);
+    // printf("left and right are %p, %p\n", left, right);
     Augmentations ret = end->augments;
     merge(left, merge(end, right));
     return ret;
@@ -70,6 +102,12 @@ Augmentations query(Node* start, Node* end) {
 
 void right_rotate(Node* node) {
     Node* parent = node->parent;
+    propagate(parent);
+    propagate(parent->left);
+    propagate(parent->right);
+    propagate(node->left);
+    propagate(node->right);
+
     Node* gp = parent->parent;
     if (gp != NULL) {
         if (parent == gp->left) {
@@ -93,6 +131,13 @@ void right_rotate(Node* node) {
 
 void left_rotate(Node* node) {
     Node* parent = node->parent;
+
+    propagate(parent);
+    propagate(parent->left);
+    propagate(parent->right);
+    propagate(node->left);
+    propagate(node->right);
+
     Node* gp = parent->parent;
     if (gp != NULL) {
         if (parent == gp->right) {
@@ -204,9 +249,13 @@ Node* split_left(Node* node) {
 }
 
 Node* merge(Node* node1, Node* node2) {
+    // printf("merging nodes: %p, %p\n", node1, node2);
     // node1 and node2 are roots of their respective trees
     if (node1 == NULL) {
         return node2;
+    }
+    if (node2 == NULL) {
+        return node1;
     }
     Node* root = find_max(node1);
     splay(root);
@@ -221,7 +270,8 @@ void print(Node* node) {
     if (node != NULL) {
         print(node->left);
         printf("(%ld, %ld) ", node->key, node->value);
-        printf("[%ld, %ld] ", node->augments.min, node->augments.max);
+        printf("[%ld, %ld, %ld, %ld] ", node->augments.min, node->augments.max,
+        node->augments.sum, node->augments.size);
         print(node->right);
     }
 }
@@ -233,8 +283,8 @@ int main2() {
     Node* node4 = make_node(4, 40, 1);
     Node* node5 = make_node(5, 50, 1);
     Node* node6 = make_node(6, 60, 1);
-    Node* node7 = make_node(7, 70, 0);
-    Node* node8 = make_node(8, 80, 0);
+    Node* node7 = make_node(7, 70, 1);
+    Node* node8 = make_node(8, 80, 1);
     Node* root = merge(node1, node2);
     root = merge(root, node3);
     root = merge(root, node4);
@@ -256,6 +306,10 @@ int main2() {
     printf("\n-----------------\n");
     
     splay(node5);
+    update_range(node1, node8, 5);
+    printf("query below\n");
+    Augmentations aug = query(node3, node7);
+    printf("min, max, sum, size: %ld, %ld, %ld, %ld\n", aug.min, aug.max, aug.sum, aug.size);
     print(node5);
     printf("\n");
     Node* right = split_right(node5);
