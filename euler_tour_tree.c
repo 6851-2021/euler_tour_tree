@@ -33,7 +33,10 @@ void cut(EulerTourTree* tree, k_t v) {
     splay(redundant);
 
     // cut redundant node
-    redundant->right->parent = NULL;
+    if (redundant->right != NULL) {
+        redundant->right->parent = NULL;
+    }
+    
 
     // reassign last pointer if necessary
     if (tree->visits[2*redundant->key+1] == redundant) {

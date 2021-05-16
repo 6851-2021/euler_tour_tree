@@ -276,7 +276,7 @@ void print(Node* node) {
     }
 }
 
-int main2() {
+int main3() {
     Node* node1 = make_node(1, 10, 1);
     Node* node2 = make_node(2, 20, 1);
     Node* node3 = make_node(3, 30, 1);

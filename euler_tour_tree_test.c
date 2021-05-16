@@ -18,8 +18,8 @@ EulerTourTreeTest* make_euler_tour_tree_test(size_t n) {
     tree->has_parent = malloc(sizeof(bool) * n);
     tree->value = malloc(sizeof(v_t) * n);
     for (k_t i = 0; i < n; i++) {
-        tree->value = 0;
-        tree->has_parent = false;
+        tree->value[i] = i*10;
+        tree->has_parent[i] = false;
         tree->parent[i] = malloc(sizeof(bool) * n);
         for (k_t j = 0; j < n; j++) {
             tree->parent[i][j] = false;
@@ -28,17 +28,31 @@ EulerTourTreeTest* make_euler_tour_tree_test(size_t n) {
     return tree;
 }
 
-k_t find_root_test(EulerTourTreeTest* tree, k_t v) {
-    bool found_parent = false;
-    do {
+bool is_ancestor(EulerTourTreeTest* tree, k_t u, k_t v) {
+    while (tree->has_parent[v]) {
+        if (u == v) {
+            return true;
+        }
         for (k_t i = 0; i < tree->n; i++) {
             if (tree->parent[v][i]) {
                 v = i;
-                found_parent = true;
                 break;
             }
         }
-    } while (found_parent);
+    }
+
+    return u == v;
+}
+
+k_t find_root_test(EulerTourTreeTest* tree, k_t v) {
+    while (tree->has_parent[v]) {
+        for (k_t i = 0; i < tree->n; i++) {
+            if (tree->parent[v][i]) {
+                v = i;
+                break;
+            }
+        }
+    }
     return v;
 }
 
@@ -111,19 +125,20 @@ v_t subtree_aggregate_size_test(EulerTourTreeTest* tree, k_t v) {
     return count;
 }
 
-void print_node(EulerTourTree* tree, k_t v) {
-    printf("min %ld, max %ld, sum %ld, size %ld\n", subtree_aggregate_min(tree, v), subtree_aggregate_max(tree, v), subtree_aggregate_sum(tree, v), subtree_aggregate_size(tree, v));
-}
-
 int main() {
-    int n = 100;
+    int n = 1000;
     EulerTourTree* tree = make_euler_tour_tree(n);
     EulerTourTreeTest* tree_test = make_euler_tour_tree_test(n);
     srand(32492341);
     while(true) {
+        int op = rand() % 9;
+
+        if (op > 5) {
+            op = 1;
+        }
         
-        int op;
-        scanf("%d\n", &op);
+        // int op;
+        // scanf("%d\n", &op);
         if (op == 0) {
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
@@ -132,20 +147,18 @@ int main() {
             }
         } else if (op == 1) {
             int i = rand() % n;
-            for (int j = i; j < n; j++) {
+            for (int j = 0; j < n; j++) {
                 if (!tree_test->has_parent[i]) {
                     k_t par = rand() % n;
-                    link(tree, j, par);
-                    link_test(tree_test, j, par);
-                    goto next_loop;
-                }
-            }
-            for (int j = 0; j < i; j++) {
-                if (!tree_test->has_parent[i]) {
-                    k_t par = rand() % n;
-                    link(tree, j, par);
-                    link_test(tree_test, j, par);
-                    goto next_loop;
+                    int counter = 0;
+                    while (is_ancestor(tree_test, (j+i)%n, par) && counter < 100) {
+                        par = rand() % n;
+                        counter ++;
+                    }
+                    if (counter < 100) {
+                        link(tree, (j+i)%n, par);
+                        link_test(tree_test, (j+i)%n, par);
+                    }
                 }
             }
         } else if (op == 2) {
