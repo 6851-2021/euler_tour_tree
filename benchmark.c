@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-void benchmark_ops(int n, int ops) {
+void benchmark_ops(int ops, int n) {
     // FILE * fp;
     // char * line = NULL;
     // size_t len = 0;
@@ -31,7 +31,7 @@ void benchmark_ops(int n, int ops) {
 
     scanf("%d, %d\n", &ops, &n);
 
-    EulerTourTree* tree = make_euler_tour_tree(n);
+    
     int* op_array = malloc(sizeof(int) * ops);
     int* i_array = malloc(sizeof(int) * ops);
     int* j_array = malloc(sizeof(int) * ops);
@@ -39,11 +39,20 @@ void benchmark_ops(int n, int ops) {
         scanf("%d, %d, %d\n", op_array + line, i_array + line, j_array + line);
     }
 
-    time_t starting_time = time(NULL);
+    // time_t starting_time = time(NULL);
+    // clock_t start_t, end_t, total_t;
+    clock_t start_time = clock();
+
+    for (int round = 0; round < 10; round ++) {
+
+    EulerTourTree* tree = make_euler_tour_tree(n);
+
     for (int line = 0; line < ops; line++) {
         int op = op_array[line];
+        // printf("op is %d\n", op);
         int i = i_array[line];
         int j = j_array[line];
+        // printf("i and j are %d, %d\n", i, j);
         if (op == 0) {
             connectivity(tree, i, j);
         } else if (op == 1) {
@@ -58,11 +67,17 @@ void benchmark_ops(int n, int ops) {
             subtree_update(tree, i, j);
         }
     }
-    time_t ending_time = time(NULL);
-    double elapsed_time = difftime(ending_time, starting_time);
+    }
+    // time_t ending_time = time(NULL);
+    clock_t end_time = clock();
+    printf("start and end time are %f, %f\n", start_time, end_time);
+    printf("Time diff: %f\n", (end_time-start_time)/CLOCKS_PER_SEC);
+    // double elapsed_time = difftime(ending_time, starting_time);
+    // printf("start and end time are %f, %f\n", starting_time, ending_time);
     printf("n: %d\n", n);
     printf("Operations: %d\n", ops);
-    printf("Time: %f\n", elapsed_time);
+    }
+    // printf("Time: %f\n", elapsed_time);
 
     // EulerTourTree* tree = make_euler_tour_tree(n);
     // bool* has_parent = malloc(sizeof(bool) * n);
@@ -124,7 +139,7 @@ void benchmark_ops(int n, int ops) {
     //     }
     // }
 
-}
+
 
 int main() {
     benchmark_ops(1e7, 1e5);
