@@ -140,7 +140,10 @@ void benchmark_ops() {
     //     }
     // }
 
-void test_gen(int ops, int n) {
+void test_gen() {
+    int ops, n;
+    scanf("%d %d", &ops, &n);
+    // printf("hi\n");
     printf("%d, %d\n", ops, n);
 
     EulerTourTree* tree = make_euler_tour_tree(n);
@@ -216,5 +219,5 @@ int main() {
     benchmark_ops();
     // int ops, n;
     // scanf("%d %d", &ops, &n);
-    // test_gen(ops, n);
+    // test_gen();
 }
