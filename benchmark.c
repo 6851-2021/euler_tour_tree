@@ -32,41 +32,37 @@ void benchmark_ops(int n, int ops) {
     scanf("%d, %d\n", &ops, &n);
 
     EulerTourTree* tree = make_euler_tour_tree(n);
+    int* op_array = malloc(sizeof(int) * ops);
+    int* i_array = malloc(sizeof(int) * ops);
+    int* j_array = malloc(sizeof(int) * ops);
+    for (int line = 0; line < ops; line++) {
+        scanf("%d, %d, %d\n", op_array + line, i_array + line, j_array + line);
+    }
 
-    for (int line = 0; line < ops; line ++) {
-
-    int op, i, j;
-    scanf("%d, %d, %d\n", &op, &i, &j);
-
+    time_t starting_time = time(NULL);
+    for (int line = 0; line < ops; line++) {
+        int op = op_array[line];
+        int i = i_array[line];
+        int j = j_array[line];
         if (op == 0) {
             connectivity(tree, i, j);
         } else if (op == 1) {
             link(tree, i, j);
-            }
-        
-        else if (op == 2) {
-            // int i = rand() % n;
-            // for (int j = 0; j < n; j++) {
-            //     if (has_parent[(j+i)%n]) {
-                    cut(tree, i);
-                    // has_parent[(j+i)%n] = false;
-                    // printf("%d, %d, %d\n", op, (j+i)%n, 0);
-                    // break;
-                
-            
+        } else if (op == 2) {
+            cut(tree, i);
         } else if (op == 3) {
-
             subtree_aggregate_min(tree, i);
-
         } else if (op == 4) {
-
             point_update(tree, i, j);
-
         } else if (op == 5) {
             subtree_update(tree, i, j);
         }
-
     }
+    time_t ending_time = time(NULL);
+    double elapsed_time = difftime(ending_time, starting_time);
+    printf("n: %d\n", n);
+    printf("Operations: %d\n", ops);
+    printf("Time: %f\n", elapsed_time);
 
     // EulerTourTree* tree = make_euler_tour_tree(n);
     // bool* has_parent = malloc(sizeof(bool) * n);
