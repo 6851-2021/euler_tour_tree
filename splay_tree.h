@@ -3,7 +3,7 @@
 
 typedef int64_t k_t;
 typedef int64_t v_t;
-typedef uint64_t size_t;
+typedef uint64_t s_t;
 
 #define MIN(x, y) ((x) < (y) ? (x) : (y))
 #define MAX(x, y) ((x) > (y) ? (x) : (y))

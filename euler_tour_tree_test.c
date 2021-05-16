@@ -11,7 +11,7 @@ typedef struct EulerTourTreeTest {
     k_t n;
 } EulerTourTreeTest;
 
-EulerTourTreeTest* make_euler_tour_tree_test(size_t n) {
+EulerTourTreeTest* make_euler_tour_tree_test(s_t n) {
     EulerTourTreeTest* tree = malloc(sizeof(EulerTourTreeTest));
     tree->n = n;
     tree->parent = malloc(sizeof(bool*) * n);
@@ -115,11 +115,11 @@ v_t subtree_aggregate_sum_test(EulerTourTreeTest* tree, k_t v) {
     return sum;
 }
 
-v_t subtree_aggregate_size_test(EulerTourTreeTest* tree, k_t v) {
+v_t subtree_aggregate_s_test(EulerTourTreeTest* tree, k_t v) {
     v_t count = 1;
     for (k_t i = 0; i < tree->n; i++) {
         if (tree->parent[i][v]) {
-            count += subtree_aggregate_size_test(tree, i);
+            count += subtree_aggregate_s_test(tree, i);
         }
     }
     return count;
@@ -182,7 +182,7 @@ int main() {
                 assert(subtree_aggregate_min(tree, i) == subtree_aggregate_min_test(tree_test, i));
                 assert(subtree_aggregate_max(tree, i) == subtree_aggregate_max_test(tree_test, i));
                 assert(subtree_aggregate_sum(tree, i) == subtree_aggregate_sum_test(tree_test, i));
-                assert(subtree_aggregate_size(tree, i) == subtree_aggregate_size_test(tree_test, i));
+                assert(subtree_aggregate_size(tree, i) == subtree_aggregate_s_test(tree_test, i));
             }
         } else if (op == 4) {
             int v = rand() % n;

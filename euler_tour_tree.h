@@ -4,10 +4,10 @@
 
 typedef struct EulerTourTree {
     Node** visits;
-    size_t n;
+    s_t n;
 } EulerTourTree;
 
-EulerTourTree* make_euler_tour_tree(size_t n);
+EulerTourTree* make_euler_tour_tree(s_t n);
 
 k_t find_root(EulerTourTree* tree, k_t v);
 

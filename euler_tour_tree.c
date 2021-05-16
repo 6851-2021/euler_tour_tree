@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-EulerTourTree* make_euler_tour_tree(size_t n) {
+EulerTourTree* make_euler_tour_tree(s_t n) {
     EulerTourTree* tree = malloc(sizeof(EulerTourTree));
     tree->n = n;
     tree->visits = malloc(sizeof(Node*) * n * 2);
