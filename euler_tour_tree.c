@@ -69,6 +69,10 @@ bool connectivity(EulerTourTree* tree, k_t u, k_t v) {
     return find_root(tree, u) == find_root(tree, v);
 }
 
+v_t get_value(EulerTourTree* tree, k_t v) {
+    return tree->visits[2*v]->value;
+}
+
 #ifdef POINT_UPDATE
 void point_update(EulerTourTree* tree, k_t v, v_t new_value) {
     update_node(tree->visits[2*v], new_value);

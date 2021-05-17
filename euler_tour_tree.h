@@ -15,6 +15,8 @@ void cut(EulerTourTree* tree, k_t v);
 
 void link(EulerTourTree* tree, k_t u, k_t v);
 
+v_t get_value(EulerTourTree* tree, k_t v);
+
 #ifdef POINT_UPDATE
 void point_update(EulerTourTree* tree, k_t v, v_t new_value);
 #endif
