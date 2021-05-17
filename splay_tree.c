@@ -6,52 +6,86 @@ void augment_node(Node* node) {
     Node* left = node->left;
     Node* right = node-> right;
 
+    #ifdef SUBTREE_MIN
     node->augments.min = INF;
+    #endif
+    #ifdef SUBTREE_MAX
     node->augments.max = -INF;
-
+    #endif
+    #ifdef SUBTREE_SUM
     node->augments.sum = 0;
+    #endif
+    #ifdef SUBTREE_SIZE
     node->augments.size = 0;
-
+    #endif
+#
     if (node->is_start) {
+        #ifdef SUBTREE_MIN
         node->augments.min = node->value;
+        #endif
+        #ifdef SUBTREE_MAX
         node->augments.max = node->value;
-
+        #endif
+        #ifdef SUBTREE_SUM
         node->augments.sum = node->value;
+        #endif
+        #ifdef SUBTREE_SIZE
         node->augments.size = 1;
+        #endif
     }
 
     if (left != NULL) {
+        #ifdef SUBTREE_MIN
         node->augments.min = MIN(left->augments.min, node->augments.min);
+        #endif
+        #ifdef SUBTREE_MAX
         node->augments.max = MAX(left->augments.max, node->augments.max);
+        #endif
+        #ifdef SUBTREE_SUM
         node->augments.sum += left->augments.sum;
+        #endif
+        #ifdef SUBTREE_SIZE
         node->augments.size += left->augments.size;
+        #endif
     }
     if (right != NULL) {
+        #ifdef SUBTREE_MIN
         node->augments.min = MIN(right->augments.min, node->augments.min);
+        #endif
+        #ifdef SUBTREE_MAX
         node->augments.max = MAX(right->augments.max, node->augments.max);
+        #endif
+        #ifdef SUBTREE_SUM
         node->augments.sum += right->augments.sum;
+        #endif
+        #ifdef SUBTREE_SIZE
         node->augments.size += right->augments.size;
+        #endif
     }
 }
 
 void propagate(Node* node) {
+    #ifdef SUBTREE_INCREMENT
     if (node != NULL && node->augments.lazy != 0) {
         node->value += node->augments.lazy;
+        #ifdef SUBTREE_MIN
         node->augments.min += node->augments.lazy;
+        #endif
+        #ifdef SUBTREE_MAX
         node->augments.max += node->augments.lazy;
+        #endif
+        #ifdef SUBTREE_SUM
         node->augments.sum += (node->augments.lazy) * (node->augments.size);
-
+        #endif
         if (node->left != NULL) {
             node->left->augments.lazy += node->augments.lazy;
         }
-
         if (node->right != NULL) {
             node->right->augments.lazy += node->augments.lazy;
         }
-
         node->augments.lazy = 0;
     }
-    
+    #endif
 }
 
 Node* make_node(k_t key, v_t value, int is_start) {
@@ -67,6 +101,15 @@ Node* make_node(k_t key, v_t value, int is_start) {
     return node;
 }
 
+#ifdef POINT_UPDATE
+void update_node(Node* node, v_t new_value) {
+    splay(node);
+    node->value = new_value;
+    augment_node(node);
+}
+#endif
+
+#ifdef SUBTREE_INCREMENT
 void update_range(Node* start, Node* end, v_t delta) {
     Node* left = split_left(start);
     Node* right = split_right(end);
@@ -76,12 +119,7 @@ void update_range(Node* start, Node* end, v_t delta) {
     
     merge(left, merge(end, right));
 }
-
-void update_node(Node* node, v_t new_value) {
-    splay(node);
-    node->value = new_value;
-    augment_node(node);
-}
+#endif
 
 void update_node_start(Node* node, int is_start) {
     splay(node);
@@ -92,8 +130,6 @@ void update_node_start(Node* node, int is_start) {
 Augmentations query(Node* start, Node* end) {
     Node* left = split_left(start);
     Node* right = split_right(end);
-    // printf("end is %p\n", end);
-    // printf("left and right are %p, %p\n", left, right);
     Augmentations ret = end->augments;
     merge(left, merge(end, right));
     return ret;
@@ -249,7 +285,6 @@ Node* split_left(Node* node) {
 }
 
 Node* merge(Node* node1, Node* node2) {
-    // printf("merging nodes: %p, %p\n", node1, node2);
     // node1 and node2 are roots of their respective trees
     if (node1 == NULL) {
         return node2;

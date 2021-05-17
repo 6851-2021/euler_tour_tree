@@ -69,46 +69,56 @@ bool connectivity(EulerTourTree* tree, k_t u, k_t v) {
     return find_root(tree, u) == find_root(tree, v);
 }
 
+#ifdef POINT_UPDATE
 void point_update(EulerTourTree* tree, k_t v, v_t new_value) {
     update_node(tree->visits[2*v], new_value);
 }
+#endif
 
+#ifdef SUBTREE_INCREMENT
 void subtree_update(EulerTourTree* tree, k_t v, v_t delta) {
     Node* first = tree->visits[2*v];
     Node* last = tree->visits[2*v+1];
 
     update_range(first, last, delta);
 }
+#endif
 
+#ifdef SUBTREE_MIN
 v_t subtree_aggregate_min(EulerTourTree* tree, k_t v) {
-
     Node* first = tree->visits[2*v];
     Node* last = tree->visits[2*v+1];
 
-    // printf("first and last are %p, %p\n", first, last);
     return query(first, last).min;
 }
+#endif
 
+#ifdef SUBTREE_MAX
 v_t subtree_aggregate_max(EulerTourTree* tree, k_t v) {
     Node* first = tree->visits[2*v];
     Node* last = tree->visits[2*v+1];
 
     return query(first, last).max;
 }
+#endif
 
+#ifdef SUBTREE_SUM
 v_t subtree_aggregate_sum(EulerTourTree* tree, k_t v) {
     Node* first = tree->visits[2*v];
     Node* last = tree->visits[2*v+1];
 
     return query(first, last).sum;
 }
+#endif
 
+#ifdef SUBTREE_SIZE
 v_t subtree_aggregate_size(EulerTourTree* tree, k_t v) {
     Node* first = tree->visits[2*v];
     Node* last = tree->visits[2*v+1];
 
     return query(first, last).size;
 }
+#endif
 
 void print_node(EulerTourTree* tree, k_t v) {
     printf("min %ld, max %ld, sum %ld, size %ld\n", subtree_aggregate_min(tree, v), subtree_aggregate_max(tree, v), subtree_aggregate_sum(tree, v), subtree_aggregate_size(tree, v));
