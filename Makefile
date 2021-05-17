@@ -9,3 +9,6 @@ test: splay_tree.c euler_tour_tree.c euler_tour_tree_test.c
 
 bench: benchmark.c splay_tree.c euler_tour_tree.c
 	gcc -o benchmark benchmark.c splay_tree.c euler_tour_tree.c -g -march=native
+
+bench-gen: benchmark_gen.c splay_tree.c euler_tour_tree.c
+	gcc -o benchmark_gen benchmark_gen.c splay_tree.c euler_tour_tree.c -g -march=native
