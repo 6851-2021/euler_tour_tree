@@ -5,8 +5,7 @@
 #include <assert.h>
 
 typedef struct EulerTourTreeTest {
-    bool **parent;
-    bool *has_parent;
+    k_t *parent;
     v_t *value;
     k_t n;
 } EulerTourTreeTest;
@@ -14,58 +13,38 @@ typedef struct EulerTourTreeTest {
 EulerTourTreeTest* make_euler_tour_tree_test(s_t n) {
     EulerTourTreeTest* tree = malloc(sizeof(EulerTourTreeTest));
     tree->n = n;
-    tree->parent = malloc(sizeof(bool*) * n);
-    tree->has_parent = malloc(sizeof(bool) * n);
+    tree->parent = malloc(sizeof(v_t) * n);
     tree->value = malloc(sizeof(v_t) * n);
     for (k_t i = 0; i < n; i++) {
         tree->value[i] = i*10;
-        tree->has_parent[i] = false;
-        tree->parent[i] = malloc(sizeof(bool) * n);
-        for (k_t j = 0; j < n; j++) {
-            tree->parent[i][j] = false;
-        }
+        tree->parent[i] = -1;
     }
     return tree;
 }
 
 bool is_ancestor(EulerTourTreeTest* tree, k_t u, k_t v) {
-    while (tree->has_parent[v]) {
+    while (v != -1) {
         if (u == v) {
             return true;
         }
-        for (k_t i = 0; i < tree->n; i++) {
-            if (tree->parent[v][i]) {
-                v = i;
-                break;
-            }
-        }
+        v = tree->parent[v];
     }
-
-    return u == v;
+    return false;
 }
 
 k_t find_root_test(EulerTourTreeTest* tree, k_t v) {
-    while (tree->has_parent[v]) {
-        for (k_t i = 0; i < tree->n; i++) {
-            if (tree->parent[v][i]) {
-                v = i;
-                break;
-            }
-        }
+    while (tree->parent[v] != -1) {
+        v = tree->parent[v];
     }
     return v;
 }
 
 void cut_test(EulerTourTreeTest* tree, k_t v) {
-    tree->has_parent[v] = false;
-    for (k_t i = 0; i < tree->n; i++) {
-        tree->parent[v][i] = false;
-    }
+    tree->parent[v] = -1;
 }
 
 void link_test(EulerTourTreeTest* tree, k_t u, k_t v) {
-    tree->has_parent[u] = true;
-    tree->parent[u][v] = true;    
+    tree->parent[u] = v;
 }
 
 bool connectivity_test(EulerTourTreeTest* tree, k_t u, k_t v) {
@@ -79,7 +58,7 @@ void point_update_test(EulerTourTreeTest* tree, k_t v, v_t new_value) {
 void subtree_update_test(EulerTourTreeTest* tree, k_t v, v_t delta) {
     tree->value[v] += delta;
     for (k_t i = 0; i < tree->n; i++) {
-        if (tree->parent[i][v]) {
+        if (tree->parent[i] == v) {
             subtree_update_test(tree, i, delta);
         }
     }
@@ -88,7 +67,7 @@ void subtree_update_test(EulerTourTreeTest* tree, k_t v, v_t delta) {
 v_t subtree_aggregate_min_test(EulerTourTreeTest* tree, k_t v) {
     v_t min_val = tree->value[v];
     for (k_t i = 0; i < tree->n; i++) {
-        if (tree->parent[i][v]) {
+        if (tree->parent[i] == v) {
             min_val = MIN(min_val, subtree_aggregate_min_test(tree, i));
         }
     }
@@ -98,7 +77,7 @@ v_t subtree_aggregate_min_test(EulerTourTreeTest* tree, k_t v) {
 v_t subtree_aggregate_max_test(EulerTourTreeTest* tree, k_t v) {
     v_t max_val = tree->value[v];
     for (k_t i = 0; i < tree->n; i++) {
-        if (tree->parent[i][v]) {
+        if (tree->parent[i] == v) {
             max_val = MAX(max_val, subtree_aggregate_max_test(tree, i));
         }
     }
@@ -108,7 +87,7 @@ v_t subtree_aggregate_max_test(EulerTourTreeTest* tree, k_t v) {
 v_t subtree_aggregate_sum_test(EulerTourTreeTest* tree, k_t v) {
     v_t sum = tree->value[v];
     for (k_t i = 0; i < tree->n; i++) {
-        if (tree->parent[i][v]) {
+        if (tree->parent[i] == v) {
             sum += subtree_aggregate_sum_test(tree, i);
         }
     }
@@ -118,7 +97,7 @@ v_t subtree_aggregate_sum_test(EulerTourTreeTest* tree, k_t v) {
 v_t subtree_aggregate_s_test(EulerTourTreeTest* tree, k_t v) {
     v_t count = 1;
     for (k_t i = 0; i < tree->n; i++) {
-        if (tree->parent[i][v]) {
+        if (tree->parent[i] == v) {
             count += subtree_aggregate_s_test(tree, i);
         }
     }
@@ -126,55 +105,39 @@ v_t subtree_aggregate_s_test(EulerTourTreeTest* tree, k_t v) {
 }
 
 int main() {
-    int n = 1000;
+    int n = 10000;
     EulerTourTree* tree = make_euler_tour_tree(n);
     EulerTourTreeTest* tree_test = make_euler_tour_tree_test(n);
     srand(32492341);
-    while(true) {
+    for (int i = 0; i < 1000; i++) {
         int op = rand() % 9;
 
         if (op > 5) {
             op = 1;
         }
-        
-        // int op;
+
         // scanf("%d\n", &op);
         if (op == 0) {
             for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    assert(connectivity(tree, i, j) == connectivity_test(tree_test, i, j));
-                }
+                assert(find_root(tree, i) == find_root_test(tree_test, i));
             }
         } else if (op == 1) {
             int i = rand() % n;
             for (int j = 0; j < n; j++) {
-                if (!tree_test->has_parent[i]) {
-                    k_t par = rand() % n;
-                    int counter = 0;
-                    while (is_ancestor(tree_test, (j+i)%n, par) && counter < 100) {
-                        par = rand() % n;
-                        counter ++;
-                    }
-                    if (counter < 100) {
-                        link(tree, (j+i)%n, par);
-                        link_test(tree_test, (j+i)%n, par);
-                    }
+                if (tree_test->parent[i] != -1) {
+                    k_t par = rand() % ((j+i)%n);
+                    link(tree, (j+i)%n, par);
+                    link_test(tree_test, (j+i)%n, par);
+                    break;
                 }
             }
         } else if (op == 2) {
             int i = rand() % n;
-            for (int j = i; j < n; j++) {
-                if (tree_test->has_parent[i]) {
-                    cut(tree, i);
-                    cut_test(tree_test, i);
-                    goto next_loop;
-                }
-            }
-            for (int j = 0; j < i; j++) {
-                if (tree_test->has_parent[i]) {
-                    cut(tree, i);
-                    cut_test(tree_test, i);
-                    goto next_loop;
+            for (int j = 0; j < n; j++) {
+                if (tree_test->parent[(j+i)%n] != -1) {
+                    cut(tree, (j+i)%n);
+                    cut_test(tree_test, (j+i)%n);
+                    break;
                 }
             }
         } else if (op == 3) {
@@ -195,8 +158,5 @@ int main() {
             subtree_update(tree, v, val);
             subtree_update_test(tree_test, v, val);
         }
-        next_loop:
-            op = op;
     }
-
 }
