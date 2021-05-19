@@ -15,7 +15,7 @@ EulerTourTree* make_euler_tour_tree(s_t n) {
 
     // make n Nodes with default values
     for (k_t i = 0; i < n; ++i) {
-        Node* node = make_node(i, i*10, 1);
+        Node* node = make_node(i, 0, 1);
         tree->visits[2*i] = node;
         tree->visits[2*i+1] = node;
     }
