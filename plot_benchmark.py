@@ -2,9 +2,6 @@ import matplotlib.pyplot as plt
 import pickle
 import numpy as np
 import scipy.stats
-from matplotlib import rc
-rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
-rc('text', usetex=True)
 
 
 
@@ -30,7 +27,8 @@ print("chi squared is", sum(diff_squared))
 
 plt.errorbar(x, runtimes, [s/np.sqrt(10)/10 for s in stdevs], fmt="b.")
 plt.plot(x, m*x+b, 'r')
-plt.title("Log(n) vs average runtime per operation on size n ETT")
-plt.xlabel('Log(n)')
+plt.title(r"$\log(n)$ vs average runtime per operation on size n ETT")
+plt.xlabel(r'$\log(n)$')
+
 plt.ylabel('Runtimes ($\mu$s)')
 plt.show()
