@@ -16,6 +16,7 @@ int main() {
         printf("Please enter an operation in the given format:\n");
         printf("link (child) (parent)\n");
         printf("cut (node)\n");
+        printf("find_root (node)\n");
         printf("connected (node_1) (node_2)\n");
         printf("subtree (agg_func) (node)\n");
         printf("update (node) (new_val)\n");
@@ -40,6 +41,13 @@ int main() {
                 long node;
                 scanf("%ld", &node);
                 cut(tree, node);
+
+                // printf("success\n");
+            }
+            else if (strcmp(op, "find_root") == 0) {
+                long node;
+                scanf("%ld", &node);
+                printf("%ld\n", find_root(tree, node));
 
                 // printf("success\n");
             }
