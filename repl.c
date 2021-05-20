@@ -26,7 +26,6 @@ int main() {
 
             printf("> ");
 
-            
             char op[100];
 
             scanf("%s", op);
@@ -34,22 +33,16 @@ int main() {
                 long child, parent;
                 scanf("%ld %ld", &child, &parent);
                 link(tree, child, parent);
-
-                // printf("success\n");
             }
             else if (strcmp(op, "cut") == 0) {
                 long node;
                 scanf("%ld", &node);
                 cut(tree, node);
-
-                // printf("success\n");
             }
             else if (strcmp(op, "find_root") == 0) {
                 long node;
                 scanf("%ld", &node);
                 printf("%ld\n", find_root(tree, node));
-
-                // printf("success\n");
             }
             else if (strcmp(op, "connected") == 0) {
                 long node1, node2;
@@ -83,14 +76,12 @@ int main() {
                 scanf("%ld %ld", &node, &new_val);
 
                 point_update(tree, node, new_val);
-                // printf("Updated node to %ld\n", new_val);
             }
             else if (strcmp(op, "increment_subtree") == 0) {
                 long node, inc_val;
                 scanf("%ld %ld", &node, &inc_val);
 
                 subtree_update(tree, node, inc_val);
-                // printf("Incremented subtree values by %ld\n", inc_val);
             }
         }
 

@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+// Reads in a file created by benchmark_gen, performs the listed operations,
+// and outputs the total time taken, in microseconds
 void benchmark_ops() {
     int ops, n;
 
