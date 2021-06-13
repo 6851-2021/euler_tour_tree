@@ -113,6 +113,10 @@ bool connectivity(EulerTourTree* tree, k_t u, k_t v) {
 
 // return the value stored at node v
 v_t get_value(EulerTourTree* tree, k_t v) {
+    #ifdef SUBTREE_INCREMENT
+        splay(tree->visits[2*v]);
+    #endif
+
     return tree->visits[2*v]->value;
 }
 
