@@ -11,13 +11,13 @@ EulerTourTree* make_euler_tour_tree(s_t n) {
     // visits is a length-2n array of Node pointers.
     // visits[2i] and visits[2i+1] stores the pointers to the
     // first and last visits of node i, respectively.
-    tree->visits = malloc(sizeof(Node*) * n * 2);
+    tree->visits = malloc(sizeof(NodePair) * n);
 
     // make n Nodes with default values
     for (k_t i = 0; i < n; ++i) {
         Node* node = make_node(i, 0, 1);
-        tree->visits[2*i] = node;
-        tree->visits[2*i+1] = node;
+        tree->visits[i].first = node;
+        tree->visits[i].last = node;
     }
 
     return tree;
@@ -33,7 +33,7 @@ void destroy_euler_tour_tree(EulerTourTree* tree) {
 
     for (k_t i = 0; i < n; ++i) {
         if (!is_deleted[i]) {
-            Node* node = tree->visits[2*i];
+            Node* node = tree->visits[i].first;
             splay(node);
             delete_recursive_and_mark(node, is_deleted);
         }
@@ -48,7 +48,7 @@ void destroy_euler_tour_tree(EulerTourTree* tree) {
 k_t find_root(EulerTourTree* tree, k_t v) {
     // return minimum element of the splay tree starting from first visit to v
 
-    Node* first_visit = tree->visits[2*v];
+    Node* first_visit = tree->visits[v].first;
     splay(first_visit);
     Node* min_node = find_min(first_visit);
     splay(min_node);
@@ -59,8 +59,8 @@ k_t find_root(EulerTourTree* tree, k_t v) {
 void cut(EulerTourTree* tree, k_t v) {
 
     // split splay tree before first and after last visit to v
-    Node* first = tree->visits[2*v];
-    Node* last = tree->visits[2*v+1];
+    Node* first = tree->visits[v].first;
+    Node* last = tree->visits[v].last;
     Node* left = split_left(first);
     Node* right = split_right(last);
 
@@ -74,8 +74,8 @@ void cut(EulerTourTree* tree, k_t v) {
     }
 
     // reassign last pointer if necessary
-    if (tree->visits[2*redundant->key+1] == redundant) {
-        tree->visits[2*redundant->key+1] = find_max(left);
+    if (tree->visits[redundant->key].last == redundant) {
+        tree->visits[redundant->key].last = find_max(left);
     }
 
     merge(left, redundant->right);
@@ -86,22 +86,22 @@ void cut(EulerTourTree* tree, k_t v) {
 void link(EulerTourTree* tree, k_t u, k_t v) {
 
     // split before last visit to v
-    Node* left = split_left(tree->visits[2*v+1]);
+    Node* left = split_left(tree->visits[v].last);
 
     // create new visit to v
-    int is_first = (tree->visits[2*v] == tree->visits[2*v+1]);
-    Node* new_v = make_node(v, tree->visits[2*v]->value, is_first);
+    int is_first = (tree->visits[v].first == tree->visits[v].last);
+    Node* new_v = make_node(v, tree->visits[v].first->value, is_first);
 
     // concatenate visits in the correct order
     Node* root = merge(left, new_v);
-    splay(tree->visits[2*u]);
-    root = merge(root, tree->visits[2*u]);
-    root = merge(root, tree->visits[2*v+1]);
+    splay(tree->visits[u].first);
+    root = merge(root, tree->visits[u].first);
+    root = merge(root, tree->visits[v].last);
 
     // if v was a leaf, need to update visits
     if (is_first) {
-        update_node_start(tree->visits[2*v], 0);
-        tree->visits[2*v] = new_v;
+        update_node_start(tree->visits[v].first, 0);
+        tree->visits[v].first = new_v;
     }
     
 }
@@ -114,24 +114,24 @@ bool connectivity(EulerTourTree* tree, k_t u, k_t v) {
 // return the value stored at node v
 v_t get_value(EulerTourTree* tree, k_t v) {
     #ifdef SUBTREE_INCREMENT
-        splay(tree->visits[2*v]);
+        splay(tree->visits[v].first);
     #endif
 
-    return tree->visits[2*v]->value;
+    return tree->visits[v].first->value;
 }
 
 #ifdef POINT_UPDATE
 // update the value stored at node v
 void point_update(EulerTourTree* tree, k_t v, v_t new_value) {
-    update_node(tree->visits[2*v], new_value);
+    update_node(tree->visits[v].first, new_value);
 }
 #endif
 
 #ifdef SUBTREE_INCREMENT
 // support subtree value incrementation updates
 void subtree_update(EulerTourTree* tree, k_t v, v_t delta) {
-    Node* first = tree->visits[2*v];
-    Node* last = tree->visits[2*v+1];
+    Node* first = tree->visits[v].first;
+    Node* last = tree->visits[v].last;
 
     update_range(first, last, delta);
 }
@@ -140,8 +140,8 @@ void subtree_update(EulerTourTree* tree, k_t v, v_t delta) {
 #ifdef SUBTREE_MIN
 // compute min of the nodes in the subtree rooted at k
 v_t subtree_aggregate_min(EulerTourTree* tree, k_t v) {
-    Node* first = tree->visits[2*v];
-    Node* last = tree->visits[2*v+1];
+    Node* first = tree->visits[v].first;
+    Node* last = tree->visits[v].last;
 
     return query(first, last).min;
 }
@@ -150,8 +150,8 @@ v_t subtree_aggregate_min(EulerTourTree* tree, k_t v) {
 #ifdef SUBTREE_MAX
 // compute max of the nodes in the subtree rooted at k
 v_t subtree_aggregate_max(EulerTourTree* tree, k_t v) {
-    Node* first = tree->visits[2*v];
-    Node* last = tree->visits[2*v+1];
+    Node* first = tree->visits[v].first;
+    Node* last = tree->visits[v].last;
 
     return query(first, last).max;
 }
@@ -160,8 +160,8 @@ v_t subtree_aggregate_max(EulerTourTree* tree, k_t v) {
 #ifdef SUBTREE_SUM
 // compute sum of the nodes in the subtree rooted at k
 v_t subtree_aggregate_sum(EulerTourTree* tree, k_t v) {
-    Node* first = tree->visits[2*v];
-    Node* last = tree->visits[2*v+1];
+    Node* first = tree->visits[v].first;
+    Node* last = tree->visits[v].last;
 
     return query(first, last).sum;
 }
@@ -170,14 +170,9 @@ v_t subtree_aggregate_sum(EulerTourTree* tree, k_t v) {
 #ifdef SUBTREE_SIZE
 // compute size of the subtree rooted at k
 v_t subtree_aggregate_size(EulerTourTree* tree, k_t v) {
-    Node* first = tree->visits[2*v];
-    Node* last = tree->visits[2*v+1];
+    Node* first = tree->visits[v].first;
+    Node* last = tree->visits[v].last;
 
     return query(first, last).size;
 }
 #endif
-
-// helper print
-void print_node(EulerTourTree* tree, k_t v) {
-    printf("min %ld, max %ld, sum %ld, size %ld\n", subtree_aggregate_min(tree, v), subtree_aggregate_max(tree, v), subtree_aggregate_sum(tree, v), subtree_aggregate_size(tree, v));
-}

@@ -3,9 +3,6 @@ import pickle
 import numpy as np
 import scipy.stats
 
-
-
-
 with open('out.out', 'rb') as f:
     read = pickle.load(f)
 

@@ -2,11 +2,15 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+typedef struct NodePair {
+    Node *first, *last;
+} NodePair;
+
 // Euler Tour representation of a tree
 typedef struct EulerTourTree {
-    Node** visits;      // visits is a length-2n array of Node pointers.
-                        // visits[2i] and visits[2i+1] stores the pointers to the
-                        // first and last visits of node i, respectively.
+    NodePair* visits;      // visits is a length-n array of pairs of node pointers.
+                           // the elements of the pair represent the first and last
+                           // visits to the node
 
     s_t n;              // n = number of nodes
 

@@ -7,13 +7,6 @@ import matplotlib.pyplot as plt
 import pickle
 
 ENCODING = 'utf8'
-INPUTS = ['apple.in_new', 'apple.in_old', 'beaver.in', 'box.in', 'explosion.in',
-          'koch.in', 'mit.in', 'sin_wave.in', 'smalllines.in', 
-          'fewcoronavirus.in', 'manycoronavirus.in', 'trees.in', 
-          'bigcoronavirus.in', 'large.in', 'diagonal.in']
-
-if 'limited' in sys.argv:
-    INPUTS = INPUTS[:9]
 
 def run_test(executable, input_file):
     r = subprocess.run(f'(./{executable} < {input_file}) > temp.out', 
