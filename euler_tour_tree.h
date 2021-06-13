@@ -18,6 +18,9 @@ typedef struct EulerTourTree {
 // create a set of n disconnected nodes
 EulerTourTree* make_euler_tour_tree(s_t n);
 
+// free memory for ETT
+void destroy_euler_tour_tree(EulerTourTree* tree);
+
 // return the root of the tree that contains v
 k_t find_root(EulerTourTree* tree, k_t v);
 

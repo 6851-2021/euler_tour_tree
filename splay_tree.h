@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include <math.h>
+#include <stdbool.h>
 #include "augmentations.h"
+
 
 typedef int64_t k_t;    // key type
 typedef int64_t v_t;    // value type
@@ -41,6 +43,9 @@ typedef struct Node {
 
 // create a splay tree node
 Node* make_node(k_t key, v_t value, int is_start);
+
+// recursive helper function for freeing ETT nodes
+void delete_recursive_and_mark(Node* node, bool* is_deleted);
 
 // do a range query
 Augmentations query(Node* start, Node* end);

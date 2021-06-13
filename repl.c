@@ -21,6 +21,7 @@ int main() {
         printf("subtree (agg_func) (node)\n");
         printf("update (node) (new_val)\n");
         printf("increment_subtree (node) (new_value)\n");
+        printf("reset\n");
 
         while (true) {
 
@@ -82,6 +83,14 @@ int main() {
                 scanf("%ld %ld", &node, &inc_val);
 
                 subtree_update(tree, node, inc_val);
+            }
+            else if (strcmp(op, "reset") == 0) {
+                destroy_euler_tour_tree(tree);
+
+                printf("Enter the number of nodes for your Euler Tour Tree: ");
+                scanf("%d", &n);
+
+                tree = make_euler_tour_tree(n);
             }
         }
 

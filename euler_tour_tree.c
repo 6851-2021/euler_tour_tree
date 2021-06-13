@@ -23,6 +23,27 @@ EulerTourTree* make_euler_tour_tree(s_t n) {
     return tree;
 }
 
+void destroy_euler_tour_tree(EulerTourTree* tree) {
+    
+    s_t n = tree->n;
+    bool* is_deleted = malloc(n * sizeof(bool));
+    for (s_t i = 0; i < n; ++i) {
+        is_deleted[i] = false;
+    }
+
+    for (k_t i = 0; i < n; ++i) {
+        if (!is_deleted[i]) {
+            Node* node = tree->visits[2*i];
+            splay(node);
+            delete_recursive_and_mark(node, is_deleted);
+        }
+    }
+
+    free(is_deleted);
+    free(tree->visits);
+    free(tree);
+}
+
 // return the root of the tree that contains v
 k_t find_root(EulerTourTree* tree, k_t v) {
     // return minimum element of the splay tree starting from first visit to v

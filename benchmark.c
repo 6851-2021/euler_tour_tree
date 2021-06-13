@@ -43,6 +43,7 @@ void benchmark_ops() {
                 subtree_update(tree, i, j);
             }
         }
+        destroy_euler_tour_tree(tree);
     }
 
     clock_t end_time = clock();

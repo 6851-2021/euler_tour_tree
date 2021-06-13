@@ -1,6 +1,9 @@
 #include "splay_tree.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+
 
 // initialize augmentations of node
 void augment_node(Node* node) {
@@ -103,6 +106,15 @@ Node* make_node(k_t key, v_t value, int is_start) {
 
     augment_node(node);
     return node;
+}
+
+void delete_recursive_and_mark(Node* node, bool* is_deleted) {
+    if (node == NULL) return;
+
+    is_deleted[node->key] = true;
+    delete_recursive_and_mark(node->left, is_deleted);
+    delete_recursive_and_mark(node->right, is_deleted);
+    free(node);
 }
 
 #ifdef POINT_UPDATE
