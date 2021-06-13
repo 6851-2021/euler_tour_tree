@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 import scipy.stats
 
-with open('out.out', 'rb') as f:
+with open('benchmark_outputs/benchmark_results.out', 'rb') as f:
     read = pickle.load(f)
 
 ns, runtimes, stdevs = read

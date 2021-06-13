@@ -9,14 +9,9 @@ import pickle
 ENCODING = 'utf8'
 
 def run_test(executable, input_file):
-    r = subprocess.run(f'(./{executable} < {input_file}) > temp.out', 
+    r = subprocess.run(f'(./{executable} < benchmark_inputs/{input_file}) > benchmark_outputs/temp.out', 
                        shell=True)
-##    print(subprocess.run('dir > temp.out', shell=True))
-##    r = subprocess.run(f'(./{executable} < {input_file}) > temp.out', 
-##                       shell=True)
-    # print("command is", f'(./{executable} < {input_file}) > temp.out')
-    # print("out is", open('temp.out', 'r').read())
-    return open('temp.out', 'r').read()
+    return open('benchmark_outputs/temp.out', 'r').read()
     result = str(r.stdout, encoding=ENCODING)
     print(result)
     return result
@@ -27,7 +22,7 @@ def test_generation(executable):
         for j in range(1, 10):
             n = 10**i*j
             ops = 10*n
-            output_file = f"benchmark_{i}_{j}.in"
+            output_file = f"benchmark_inputs/benchmark_{i}_{j}.in"
             with open('temp.in', 'w') as f:
                 f.write(f"{ops} {n}")
             r = subprocess.run(f'(./{executable} < temp.in) > {output_file}', 
@@ -66,5 +61,5 @@ if __name__ == "__main__":
         print(op, n, np.mean(runtime), np.std(runtime))
         out.append((op, n, np.mean(runtime), np.std(runtime)))
 
-    with open('out.out', 'wb') as f:
+    with open('benchmark_outputs/benchmark_results.out', 'wb') as f:
         pickle.dump((ns, runtimes, stdevs), f)
