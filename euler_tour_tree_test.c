@@ -138,7 +138,7 @@ int main() {
         } else if (op == 1) {
             int i = rand() % n;
             for (int j = 0; j < n; j++) {
-                if (tree_test->parent[(j+i)%n] == -1) {
+                if ((j+i)%n != 0 && tree_test->parent[(j+i)%n] == -1) {
                     k_t par = rand() % ((j+i)%n);
                     link(tree, (j+i)%n, par);
                     link_test(tree_test, (j+i)%n, par);
