@@ -37,7 +37,7 @@ void destroy_euler_tour_tree(EulerTourTree* tree) {
         if (!tree->has_parent[i]) {
             Node* node = tree->visits[i].first;
             splay(node);
-            delete_recursive_and_mark(node, tree->has_parent);
+            delete_recursive(node);
         }
     }
 
@@ -63,7 +63,6 @@ int cut(EulerTourTree* tree, k_t v) {
     if (tree->has_parent[v]) {
         tree->has_parent[v] = false;
     }
-
     else {
         return 1;
     }
@@ -98,9 +97,12 @@ int link(EulerTourTree* tree, k_t u, k_t v) {
     if (!tree->has_parent[u]) {
         tree->has_parent[u] = true;
     }
-
     else {
         return 1;
+    }
+
+    if (find_root(tree, v) == u) {
+        return 2;
     }
     
 

@@ -108,12 +108,11 @@ Node* make_node(k_t key, v_t value, int is_start) {
     return node;
 }
 
-void delete_recursive_and_mark(Node* node, bool* is_deleted) {
+void delete_recursive(Node* node) {
     if (node == NULL) return;
 
-    is_deleted[node->key] = true;
-    delete_recursive_and_mark(node->left, is_deleted);
-    delete_recursive_and_mark(node->right, is_deleted);
+    delete_recursive(node->left);
+    delete_recursive(node->right);
     free(node);
 }
 
