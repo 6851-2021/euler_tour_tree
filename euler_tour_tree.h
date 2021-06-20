@@ -11,6 +11,7 @@ typedef struct EulerTourTree {
     NodePair* visits;      // visits is a length-n array of pairs of node pointers.
                            // the elements of the pair represent the first and last
                            // visits to the node
+    bool* has_parent;
 
     s_t n;              // n = number of nodes
 
@@ -29,10 +30,10 @@ void destroy_euler_tour_tree(EulerTourTree* tree);
 k_t find_root(EulerTourTree* tree, k_t v);
 
 // cut the subtree rooted at v from the rest of the tree
-void cut(EulerTourTree* tree, k_t v);
+int cut(EulerTourTree* tree, k_t v);
 
 // insert u's subtree as a child of v
-void link(EulerTourTree* tree, k_t u, k_t v);
+int link(EulerTourTree* tree, k_t u, k_t v);
 
 // check whether nodes u and v are connected
 bool connectivity(EulerTourTree* tree, k_t u, k_t v);

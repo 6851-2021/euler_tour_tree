@@ -33,12 +33,18 @@ int main() {
             if (strcmp(op, "link") == 0) {
                 long child, parent;
                 scanf("%ld %ld", &child, &parent);
-                link(tree, child, parent);
+                int not_linked = link(tree, child, parent);
+                if (not_linked) {
+                    printf("ERROR: node is already linked.\n");
+                }
             }
             else if (strcmp(op, "cut") == 0) {
                 long node;
                 scanf("%ld", &node);
-                cut(tree, node);
+                int not_cut = cut(tree, node);
+                if (not_cut) {
+                    printf("ERROR: node does not have a parent.\n");
+                }
             }
             else if (strcmp(op, "find_root") == 0) {
                 long node;

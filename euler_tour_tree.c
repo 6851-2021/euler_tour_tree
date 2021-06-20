@@ -12,12 +12,14 @@ EulerTourTree* make_euler_tour_tree(s_t n) {
     // visits[2i] and visits[2i+1] stores the pointers to the
     // first and last visits of node i, respectively.
     tree->visits = malloc(sizeof(NodePair) * n);
+    tree->has_parent = malloc(sizeof(bool) * n);
 
     // make n Nodes with default values
     for (k_t i = 0; i < n; ++i) {
         Node* node = make_node(i, 0, 1);
         tree->visits[i].first = node;
         tree->visits[i].last = node;
+        tree->has_parent[i] = false;
     }
 
     return tree;
@@ -26,21 +28,22 @@ EulerTourTree* make_euler_tour_tree(s_t n) {
 void destroy_euler_tour_tree(EulerTourTree* tree) {
     
     s_t n = tree->n;
-    bool* is_deleted = malloc(n * sizeof(bool));
-    for (s_t i = 0; i < n; ++i) {
-        is_deleted[i] = false;
-    }
+    // bool* is_deleted = malloc(n * sizeof(bool));
+    // for (s_t i = 0; i < n; ++i) {
+    //     is_deleted[i] = false;
+    // }
 
     for (k_t i = 0; i < n; ++i) {
-        if (!is_deleted[i]) {
+        if (!tree->has_parent[i]) {
             Node* node = tree->visits[i].first;
             splay(node);
-            delete_recursive_and_mark(node, is_deleted);
+            delete_recursive_and_mark(node, tree->has_parent);
         }
     }
 
-    free(is_deleted);
+    // free(is_deleted);
     free(tree->visits);
+    free(tree->has_parent);
     free(tree);
 }
 
@@ -56,7 +59,14 @@ k_t find_root(EulerTourTree* tree, k_t v) {
 }
 
 // cut the subtree rooted at v from the rest of the tree
-void cut(EulerTourTree* tree, k_t v) {
+int cut(EulerTourTree* tree, k_t v) {
+    if (tree->has_parent[v]) {
+        tree->has_parent[v] = false;
+    }
+
+    else {
+        return 1;
+    }
 
     // split splay tree before first and after last visit to v
     Node* first = tree->visits[v].first;
@@ -80,10 +90,19 @@ void cut(EulerTourTree* tree, k_t v) {
 
     merge(left, redundant->right);
     free(redundant);
+    return 0;
 }
 
 // insert u as a child of v
-void link(EulerTourTree* tree, k_t u, k_t v) {
+int link(EulerTourTree* tree, k_t u, k_t v) {
+    if (!tree->has_parent[u]) {
+        tree->has_parent[u] = true;
+    }
+
+    else {
+        return 1;
+    }
+    
 
     // split before last visit to v
     Node* left = split_left(tree->visits[v].last);
@@ -103,7 +122,8 @@ void link(EulerTourTree* tree, k_t u, k_t v) {
         update_node_start(tree->visits[v].first, 0);
         tree->visits[v].first = new_v;
     }
-    
+
+    return 0;
 }
 
 // check whether nodes u and v are connected
