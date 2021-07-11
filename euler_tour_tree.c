@@ -25,6 +25,26 @@ EulerTourTree* make_euler_tour_tree(s_t n) {
     return tree;
 }
 
+// create the Euler Tour representation of a set of n disconnected nodes
+void extend_euler_tour_tree(EulerTourTree* tree, s_t n) {
+    s_t old_n = tree->n;
+    tree->n = n;
+
+    // visits is a length-2n array of Node pointers.
+    // visits[2i] and visits[2i+1] stores the pointers to the
+    // first and last visits of node i, respectively.
+    tree->visits = realloc(tree->visits, sizeof(NodePair) * n);
+    tree->has_parent = realloc(tree->has_parent, sizeof(bool) * n);
+
+    // make n Nodes with default values
+    for (k_t i = old_n; i < n; ++i) {
+        Node* node = make_node(i, 0, 1);
+        tree->visits[i].first = node;
+        tree->visits[i].last = node;
+        tree->has_parent[i] = false;
+    }
+}
+
 void destroy_euler_tour_tree(EulerTourTree* tree) {
     
     s_t n = tree->n;
@@ -33,7 +53,7 @@ void destroy_euler_tour_tree(EulerTourTree* tree) {
         if (!tree->has_parent[i]) {
             Node* node = tree->visits[i].first;
             root(node);
-            delete_recursive_and_mark(node, tree->has_parent);
+            delete_recursive(node);
         }
     }
 
@@ -44,6 +64,11 @@ void destroy_euler_tour_tree(EulerTourTree* tree) {
 
 // return the root of the tree that contains v
 k_t find_root(EulerTourTree* tree, k_t v) {
+    // if out-of-bounds, then node is singleton
+    if (v >= tree->n) {
+        return v;
+    }
+
     // return minimum element of the splay tree starting from first visit to v
 
     Node* first_visit = tree->visits[v].first;
@@ -54,13 +79,12 @@ k_t find_root(EulerTourTree* tree, k_t v) {
 
 // cut the subtree rooted at v from the rest of the tree
 int cut(EulerTourTree* tree, k_t v) {
-    if (tree->has_parent[v]) {
-        tree->has_parent[v] = false;
-    }
-
-    else {
+    // return if node is out-of-bounds or does not have a parent
+    if (v >= tree->n || !tree->has_parent[v]) {
         return 1;
     }
+        
+    tree->has_parent[v] = false;
 
     // split splay tree before first and after last visit to v
     Node* first = tree->visits[v].first;
@@ -88,12 +112,22 @@ int cut(EulerTourTree* tree, k_t v) {
 
 // insert u as a child of v
 int link(EulerTourTree* tree, k_t u, k_t v) {
+    if (u >= tree->n) {
+        extend_euler_tour_tree(tree, u+1);
+    }
+    if (v >= tree->n) {
+        extend_euler_tour_tree(tree, v+1);
+    }
+
     if (!tree->has_parent[u]) {
         tree->has_parent[u] = true;
     }
-
     else {
         return 1;
+    }
+
+    if (find_root(tree, v) == u) {
+        return 2;
     }
     
 

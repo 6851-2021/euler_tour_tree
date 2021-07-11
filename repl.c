@@ -34,8 +34,11 @@ int main() {
                 long child, parent;
                 scanf("%ld %ld", &child, &parent);
                 int not_linked = link(tree, child, parent);
-                if (not_linked) {
+                if (not_linked == 1) {
                     printf("ERROR: node is already linked.\n");
+                } 
+                else if (not_linked == 2) {
+                    printf("ERROR: cannot link node to descendant.\n");
                 }
             }
             else if (strcmp(op, "cut") == 0) {

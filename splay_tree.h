@@ -45,7 +45,7 @@ typedef struct Node {
 Node* make_node(k_t key, v_t value, int is_start);
 
 // recursive helper function for freeing ETT nodes
-void delete_recursive_and_mark(Node* node, bool* is_deleted);
+void delete_recursive(Node* node);
 
 // do a range query
 Augmentations query(Node* start, Node* end);
