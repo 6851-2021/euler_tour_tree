@@ -274,6 +274,13 @@ void splay(Node* node) {
     }
 }
 
+// return root of the tree
+Node* root(Node* node)
+ {
+     splay(node);
+     return node;
+ }
+
 // return min of tree rooted at node
 // precondition: node is at root
 Node* find_min(Node* node) {
@@ -286,6 +293,7 @@ Node* find_min(Node* node) {
     while (node->left != NULL) {
         node = node->left;
     }
+    splay(node);
     return node;
 }
 

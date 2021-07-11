@@ -66,6 +66,9 @@ void update_range(Node* start, Node* end, v_t delta);
 // bring node to root using rotations
 void splay(Node* node);
 
+// returns root of the tree
+Node* root(Node* node);
+
 // return min of tree rooted at node
 // precondition: node is at root
 Node* find_min(Node* node);

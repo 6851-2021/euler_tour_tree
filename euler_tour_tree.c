@@ -28,20 +28,15 @@ EulerTourTree* make_euler_tour_tree(s_t n) {
 void destroy_euler_tour_tree(EulerTourTree* tree) {
     
     s_t n = tree->n;
-    // bool* is_deleted = malloc(n * sizeof(bool));
-    // for (s_t i = 0; i < n; ++i) {
-    //     is_deleted[i] = false;
-    // }
 
     for (k_t i = 0; i < n; ++i) {
         if (!tree->has_parent[i]) {
             Node* node = tree->visits[i].first;
-            splay(node);
+            root(node);
             delete_recursive_and_mark(node, tree->has_parent);
         }
     }
 
-    // free(is_deleted);
     free(tree->visits);
     free(tree->has_parent);
     free(tree);
@@ -52,9 +47,8 @@ k_t find_root(EulerTourTree* tree, k_t v) {
     // return minimum element of the splay tree starting from first visit to v
 
     Node* first_visit = tree->visits[v].first;
-    splay(first_visit);
+    root(first_visit);
     Node* min_node = find_min(first_visit);
-    splay(min_node);
     return min_node->key;
 }
 
@@ -76,7 +70,6 @@ int cut(EulerTourTree* tree, k_t v) {
 
     // potential extra visitation
     Node* redundant = find_min(right);
-    splay(redundant);
 
     // cut redundant node
     if (redundant->right != NULL) {
@@ -112,10 +105,10 @@ int link(EulerTourTree* tree, k_t u, k_t v) {
     Node* new_v = make_node(v, tree->visits[v].first->value, is_first);
 
     // concatenate visits in the correct order
-    Node* root = merge(left, new_v);
-    splay(tree->visits[u].first);
-    root = merge(root, tree->visits[u].first);
-    root = merge(root, tree->visits[v].last);
+    Node* root_node = merge(left, new_v);
+    root(tree->visits[u].first);
+    root_node = merge(root_node, tree->visits[u].first);
+    root_node = merge(root_node, tree->visits[v].last);
 
     // if v was a leaf, need to update visits
     if (is_first) {
@@ -134,7 +127,7 @@ bool connectivity(EulerTourTree* tree, k_t u, k_t v) {
 // return the value stored at node v
 v_t get_value(EulerTourTree* tree, k_t v) {
     #ifdef SUBTREE_INCREMENT
-        splay(tree->visits[v].first);
+        root(tree->visits[v].first);
     #endif
 
     return tree->visits[v].first->value;
